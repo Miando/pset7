@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="initial-scale=1, width=device-width" name="viewport">
+    <title>Title</title>
+    {% load staticfiles %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'yahoo/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'yahoo/styles.css' %}">
+    <script src="{% static 'yahoo/js/jquery-1.11.3.min.js' %}"></script>
+    <script src="{% static 'yahoo/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'yahoo/js/scripts.js' %}"></script>
+
+</head>
+<body>
+<div class="container">
+
+            <div id="top">
+                <div>
+                    <a href="{% url 'yahoo:index' %}"><img alt="C$50 Finance" src="https://finance.cs50.net/img/logo.png"></a>
+                </div>
+
+                <ul class="nav nav-pills">
+                    <li><a href="{% url 'yahoo:quote' %}">Quote</a></li>
+                    <li><a href="{% url 'yahoo:buy' %}">Buy</a></li>
+                    <li><a href="{% url 'yahoo:sell' %}">Sell</a></li>
+                    <li><a href="#">History</a></li>
+                    <li><a href="#"><strong>Log Out</strong></a></li>
+                </ul>
+
+            </div>
+{% block body %}
+{% endblock %}
+</div>
+
+</body>
+</html>
