@@ -14,4 +14,4 @@ class Stock(models.Model):
 
 class history:
     transaction = models.CharField(max_length=10)
-    
+
