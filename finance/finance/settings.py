@@ -74,15 +74,20 @@ WSGI_APPLICATION = 'finance.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'miando$cs50pset7',
-        'USER': 'miando',
-        'PASSWORD': 'M123457M',
-        #'USER': 'root',
-        #'PASSWORD': '123457',
+        'NAME': 'cs50pset7',
+        'USER': 'root',
+        'PASSWORD': '123457',
+    }
+}
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
