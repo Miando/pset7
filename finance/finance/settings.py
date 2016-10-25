@@ -79,8 +79,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'cs50pset7',
-        'USER': 'root',
-        'PASSWORD': '123457',
+        'USER': 'miando',
+        'PASSWORD': 'M123457M',
+        #'USER': 'root',
+        #'PASSWORD': '123457',
     }
 }
 
