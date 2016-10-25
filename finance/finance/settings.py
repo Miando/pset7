@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'finance.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cs50pset7',
+        'NAME': 'miando$cs50pset7',
         'USER': 'miando',
         'PASSWORD': 'M123457M',
         #'USER': 'root',
