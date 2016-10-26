@@ -28,10 +28,10 @@ def quote(request):
         csv1 = urllib2.urlopen(link1)
         csv2 = urllib2.urlopen(link2)
         for line in csv1:
-            price = line.split(",")[1]
+            price = line.decode('utf8').split(",")[1]
             break
         for row in csv2:
-            name= row.split(",")[0].replace('"', '')
+            name= row.decode('utf8').split(",")[0].replace('"', '')
             break
         result= "A share of " + name +" (" + symbol + ") costs $" + price
         context = {
