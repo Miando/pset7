@@ -49,8 +49,8 @@ def result(request):
 def buy(request):
     form = BuyForm(request.POST)
     if form.is_valid():
-        symbol = form.cleaned_data['symbol']
-        shares = form.cleaned_data['shares']
+        symbol = form.cleaned_data['symbol'].upper()
+        shares = form.cleaned_data['shares'].upper()
         link1 = "http://download.finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=sl1d1t1c1ohgv&e=.csv"
         link2 = "http://finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=nab"
         csv1 = urllib2.urlopen(link1)
@@ -69,14 +69,16 @@ def buy(request):
             new_shares = sh+int(shares)
             stock.update(price=price)
             stock.update(shares=new_shares)
-            return render(request, 'yahoo/buy.html', {'form': form})
-        stock = form.save(commit=False)
-        stock.name = name
-        stock.price = price
-        stock.symbol = symbol.upper()
-        stock.save()
-        stocks = Stock.objects.all()
-        return render(request, 'yahoo/index.html', {'stocks': stocks})
+            stocks = Stock.objects.all()
+            return render(request, 'yahoo/index.html', {'stocks': stocks})
+        else:
+            stock = form.save(commit=False)
+            stock.name = name
+            stock.price = price
+            stock.symbol = symbol
+            stock.save()
+            stocks = Stock.objects.all()
+            return render(request, 'yahoo/index.html', {'stocks': stocks})
     else:
         form = BuyForm()
     return render(request, 'yahoo/buy.html', {'form': form})
