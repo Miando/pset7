@@ -1,0 +1,25 @@
+{% extends 'yahoo/base.html' %}
+{% block body %}
+
+<div id="middle">
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Transaction</th>
+            <th>Date/Time</th>
+            <th>Symbol</th>
+            <th>Shares</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for h in history %}
+    <tr><td>{{h.transaction}}</td><td>{{h.data}}</td><td>{{h.symbol}}</td><td>{{h.shares}}</td><td>${{h.price}}</td></tr><tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+            </div>
+{% endblock %}

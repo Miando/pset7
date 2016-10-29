@@ -25,8 +25,8 @@
                     <li><a href="{% url 'yahoo:quote' %}">Quote</a></li>
                     <li><a href="{% url 'yahoo:buy' %}">Buy</a></li>
                     <li><a href="{% url 'yahoo:sell' %}">Sell</a></li>
-                    <li><a href="#">History</a></li>
-                    <li><a href="#"><strong>Log Out</strong></a></li>
+                    <li><a href="{% url 'yahoo:history' %}">History</a></li>
+                    <li><a href="{% url 'yahoo:logout_user' %}"><strong>Log Out</strong></a></li>
                 </ul>
 
             </div>

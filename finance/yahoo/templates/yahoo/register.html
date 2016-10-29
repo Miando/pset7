@@ -1,0 +1,24 @@
+{% extends 'yahoo/base.html' %}
+{% block body %}
+
+<div id="middle">
+<form action="" method="post">
+    <fieldset>
+        {% for field in form %}
+        {% csrf_token %}
+
+        <div class="form-group">
+            <div>{{ field }}</div>
+        </div>
+        {% endfor %}
+        <div class="form-group">
+            <button class="btn btn-default" type="submit">Register</button>
+        </div>
+    </fieldset>
+</form>
+<div>
+    or <a href="{% url 'yahoo:login_user' %}">log in</a>
+</div>
+            </div>
+
+{% endblock %}
