@@ -6,7 +6,6 @@ from .forms import QuoteForm, BuyForm, UserForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.utils import timezone
-import datetime
 
 try:
     import urllib.request as urllib2
@@ -43,6 +42,7 @@ def quote(request):
         form = QuoteForm(request.POST)
         if form.is_valid():
             symbol = form.cleaned_data['symbol']
+
             link1 = "http://download.finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=sl1d1t1c1ohgv&e=.csv"
             link2 = "http://finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=nab"
             csv1 = urllib2.urlopen(link1)
@@ -53,7 +53,12 @@ def quote(request):
             for row in csv2:
                 name= row.decode('utf8').split(",")[0].replace('"', '')
                 break
-            result= "A share of " + name +" (" + symbol + ") costs $" + price
+            if price=="N/A":
+                context = {
+                    'error_message': 'Symbol not found.',
+                }
+                return render(request, 'yahoo/error.html', context)
+            result= "A share of " + name +" (" + symbol.upper()  + ") costs $" + price
             context = {
                 "result": result,
             }
@@ -66,6 +71,9 @@ def quote(request):
 def result(request):
     pass
 
+def error(request):
+    pass
+
 def buy(request):
     if not request.user.is_authenticated():
         return render(request, 'yahoo/login.html')
@@ -74,6 +82,11 @@ def buy(request):
         if form.is_valid():
             symbol = form.cleaned_data['symbol'].upper()
             shares = form.cleaned_data['shares'].upper()
+            if shares.isdigit()==False:
+                context = {
+                'error_message': "Invalid number of shares.",
+                }
+                return render(request, 'yahoo/error.html', context)
             link1 = "http://download.finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=sl1d1t1c1ohgv&e=.csv"
             link2 = "http://finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=nab"
             csv1 = urllib2.urlopen(link1)
@@ -86,6 +99,15 @@ def buy(request):
                 break
             if Stock.objects.filter(symbol=symbol, user=request.user):
                 stock_sh=Stock.objects.get(symbol=symbol, user=request.user)
+                n = Cash.objects.get(user=request.user)
+                money = n.money
+                cash = Cash.objects.select_for_update().filter(user=request.user)
+                m = float(money) - float(price) * float(shares)
+                if m < 0:
+                    context = {
+                        'error_message': "You can't afford that.",
+                    }
+                    return render(request, 'yahoo/error.html', context)
                 stock = Stock.objects.select_for_update().filter(symbol=symbol, user=request.user)
                 stock.update(price=price)
                 sh=int(stock_sh.shares)
@@ -95,15 +117,20 @@ def buy(request):
                 history = History(data=timezone.now(), user=request.user, transaction='BUY',
                                   symbol=symbol, shares=shares, price=price)
                 history.save()
+
+                cash.update(money=m)
+                stocks = Stock.objects.filter(user=request.user)
+                return redirect('/')
+            else:
                 n = Cash.objects.get(user=request.user)
                 money = n.money
                 cash = Cash.objects.select_for_update().filter(user=request.user)
                 m = float(money) - float(price) * float(shares)
-                cash.update(money=m)
-                stocks = Stock.objects.filter(user=request.user)
-                return render(request, 'yahoo/index.html', {'stocks': stocks})
-            else:
-
+                if m < 0:
+                    context = {
+                        'error_message': "You can't afford that.",
+                    }
+                    return render(request, 'yahoo/error.html', context)
                 stock = form.save(commit=False)
                 stock.user = request.user
                 stock.name = name
@@ -117,9 +144,14 @@ def buy(request):
                 money=n.money
                 cash = Cash.objects.select_for_update().filter(user=request.user,)
                 m=float(money)-float(price)*float(shares)
+                if m <0:
+                    context = {
+                        'error_message': "You can't afford that.",
+                    }
+                    return render(request, 'yahoo/error.html', context)
                 cash.update(money=m)
                 stocks = Stock.objects.filter(user=request.user)
-                return render(request, 'yahoo/index.html', {'stocks': stocks})
+                return redirect('/')
         else:
             form = BuyForm()
         return render(request, 'yahoo/buy.html', {'form': form})
@@ -133,7 +165,7 @@ def sell(request):
             symbol = request.POST.get("sell")
             print (symbol)
             stock = Stock.objects.filter(symbol=symbol, user=request.user)
-            a=stock = Stock.objects.get(symbol=symbol, user=request.user)
+            a = Stock.objects.get(symbol=symbol, user=request.user)
             shares = a.shares
             link1 = "http://download.finance.yahoo.com/d/quotes.csv?s=" + str(symbol) + "&f=sl1d1t1c1ohgv&e=.csv"
             csv1 = urllib2.urlopen(link1)
@@ -190,8 +222,6 @@ def register(request):
         "form": form,
     }
     return render(request, 'yahoo/register.html', context)
-
-
 
 def logout_user(request):
     logout(request)

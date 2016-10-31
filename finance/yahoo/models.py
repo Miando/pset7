@@ -17,7 +17,7 @@ class History(models.Model):
     user = models.ForeignKey(User, default=1)
     transaction = models.CharField(max_length=10)
     data = models.DateField()
-    symbol = models.CharField(max_length=10)
+    symbol = models.CharField('symbol', max_length=10)
     shares = models.CharField(max_length=250)
     price = models.CharField(max_length=250)
 

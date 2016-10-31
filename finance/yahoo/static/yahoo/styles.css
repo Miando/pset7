@@ -6,13 +6,19 @@
  *
  * Global CSS.
  */
-
+.left {
+    float:left
+}
 .container
 {
     /* center contents */
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+}
+
+#middle td {
+    text-align: left;
 }
 
 #middle .form-control

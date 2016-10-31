@@ -1,0 +1,12 @@
+{% extends 'yahoo/base.html' %}
+{% block title %}C$50 Finance: Error{% endblock %}
+{% block body %}
+
+
+<div id="middle">
+{% if error_message %}
+    <h1>Sorry!</h1>
+    <p>{{ error_message }}</p>
+{% endif %}
+</div>
+{% endblock %}
